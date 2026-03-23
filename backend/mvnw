@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+set -e
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+WRAPPER_DIR="$SCRIPT_DIR/.mvn/wrapper"
+MAVEN_VERSION="3.9.9"
+MAVEN_BASE="apache-maven-$MAVEN_VERSION"
+ARCHIVE="$WRAPPER_DIR/$MAVEN_BASE-bin.tar.gz"
+MAVEN_HOME="$WRAPPER_DIR/$MAVEN_BASE"
+MVN_CMD="$MAVEN_HOME/bin/mvn"
+
+mkdir -p "$WRAPPER_DIR"
+
+if [ ! -x "$MVN_CMD" ]; then
+  echo "Downloading Maven $MAVEN_VERSION..."
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$MAVEN_VERSION/apache-maven-$MAVEN_VERSION-bin.tar.gz" -o "$ARCHIVE"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -qO "$ARCHIVE" "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$MAVEN_VERSION/apache-maven-$MAVEN_VERSION-bin.tar.gz"
+  else
+    echo "curl or wget is required to download Maven."
+    exit 1
+  fi
+
+  echo "Extracting Maven..."
+  tar -xzf "$ARCHIVE" -C "$WRAPPER_DIR"
+fi
+
+exec "$MVN_CMD" "$@"
