@@ -15,35 +15,49 @@ body {
   background: var(--bg);
   color: var(--text);
 }
+h1 {
+  font-size: 38px;
+}
+h2 {
+  font-size: 34px;
+}
+h3 {
+  font-size: 26px;
+}
 
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 20px;
-  background:  
-                    linear-gradient(93.93deg, #1178bb -5.69%, #15A79F 107.1%);
+  /* padding: 14px 20px; */
+  background: linear-gradient(93.93deg, #1178bb -5.69%, #15A79F 107.1%);
   /* color: white; */
 }
 .topbar nav {
   display: flex;
-  gap: 14px;
+  gap: 28px;
   align-items: center;
   margin-right: 26px;
 }
 .topbar a {
   color: white;
   text-decoration: none;
-  font-size: 15px;
+  font-size: 2rem;
 }
-.topbar a[href="/dashboard"],
-.topbar a[href="/profile"] {
-  font-size: 17px;
+.brand-link {
+  display: inline-flex;
+  align-items: center;
 }
-.topbar .btn {
-  font-size: 15px;
-  padding: 8px 12px;
+.brand-logo {
+  padding-left: 1.5rem;
+  height: 5em;
+  width: auto;
+  display: block;
 }
+/* .topbar nav a,
+.topbar nav .btn {
+  font-size: 2rem;
+} */
 
 .container { 
    margin: 24px auto; padding: 0 16px; }
@@ -83,18 +97,22 @@ body {
   width: 100%;
   max-width: 420px;
 }
+.login-left .form-grid > .btn {
+  justify-self: end !important;
+  margin-left: auto;
+}
 .login-right {
   min-height: 100%;
-  padding: 18px;
+  /* padding: 18px; */
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
   background: linear-gradient(145deg, #eaf2ff, #eefdfb);
 }
 .login-image {
   width: 100%;
   height: calc(100vh - 170px);
-  object-fit: contain;
+  /* object-fit: contain; */
   display: block;
 }
 
@@ -189,10 +207,12 @@ select {
 } */
 /*  */
 .btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  width: fit-content;
+  justify-self: start;
   padding: 10px 24px;
   font-size: 16px;
   font-weight: 500;
@@ -230,6 +250,45 @@ select {
     border: 1px solid #504e4e ;
  }
 .btn.danger { background: var(--danger); }
+.btn.cancel {
+  color: #333;
+  border: 1px solid #d1d5db;
+  background: #f8fafc;
+}
+.button-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.auth-link {
+  justify-self: start;
+}
+.login-note {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f8fbff;
+}
+.login-note h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #0f5f95;
+}
+.login-note p {
+  margin: 6px 0;
+  font-size: 13px;
+}
+.button-row .btn.cancel {
+  order: 1;
+}
+.button-row .btn:not(.cancel) {
+  order: 2;
+}
 .nav-icon-btn {
   position: relative;
   min-width: 44px;

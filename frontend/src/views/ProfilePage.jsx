@@ -2,11 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../api/client.js';
 
+const STRONG_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])(?=.*[A-Za-z\d@$!%*?&]{8,})[A-Za-z\d@$!%*?&]+$/;
+
+function getPasswordMissingRules(password) {
+  const missing = [];
+  if (password.length < 8) missing.push('at least 8 characters');
+  if (!/[a-z]/.test(password)) missing.push('one lowercase letter');
+  if (!/[A-Z]/.test(password)) missing.push('one uppercase letter');
+  if (!/\d/.test(password)) missing.push('one digit');
+  if (!/[@$!%*?&]/.test(password)) missing.push('one special character (@$!%*?&)');
+  if (/\s/.test(password)) missing.push('no whitespace');
+  return missing;
+}
+
 export default function ProfilePage() {
   const [profile, setProfile] = useState({ email: '', fullName: '', phone: '' });
   const [passwords, setPasswords] = useState({ oldPassword: '', newPassword: '' });
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
 
   const loadProfile = async () => {
     try {
@@ -35,9 +49,15 @@ export default function ProfilePage() {
 
   const changePassword = async (e) => {
     e.preventDefault();
+    const missingRules = getPasswordMissingRules(passwords.newPassword);
+    if (!STRONG_PASSWORD_REGEX.test(passwords.newPassword) || missingRules.length > 0) {
+      toast.error(`New password must include ${missingRules.join(', ')}`);
+      return;
+    }
     try {
       await api.put('/profile/change-password', passwords);
       setPasswords({ oldPassword: '', newPassword: '' });
+      setShowPasswordDialog(false);
       toast.success('Password changed successfully');
     } catch (e1) {
       const details = e1.response?.data;
@@ -49,7 +69,7 @@ export default function ProfilePage() {
     <section className="card">
       <div>
         <h2>Profile Management</h2>
-        <form className="form-grid" onSubmit={updateProfile}>
+        <form id="profile-form" className="form-grid" onSubmit={updateProfile}>
           <div className="floating-label full">
             <input placeholder=" " value={profile.fullName} onChange={(e) => setProfile({ ...profile, fullName: e.target.value })} />
             <label>Full Name</label>
@@ -62,30 +82,45 @@ export default function ProfilePage() {
             <input placeholder=" " value={profile.phone} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} />
             <label>Phone</label>
           </div>
-          <button className="btn" type="submit">Update Profile</button>
         </form>
       </div>
-      <br />
-      <div>
-        <h2>Change Password</h2>
-        <form className="form-grid" onSubmit={changePassword}>
-          <div className="floating-label full">
-            <input type={showOldPassword ? 'text' : 'password'} placeholder=" " value={passwords.oldPassword} onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })} />
-            <label>Old Password</label>
-            <button type="button" className="password-toggle" onClick={() => setShowOldPassword((v) => !v)}>
-              {showOldPassword ? '🙈' : '👁'}
-            </button>
-          </div>
-          <div className="floating-label full">
-            <input type={showNewPassword ? 'text' : 'password'} placeholder=" " value={passwords.newPassword} onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })} />
-            <label>New Password</label>
-            <button type="button" className="password-toggle" onClick={() => setShowNewPassword((v) => !v)}>
-              {showNewPassword ? '🙈' : '👁'}
-            </button>
-          </div>
-          <button className="btn" type="submit">Change Password</button>
-        </form>
+      <div className="button-row">
+        <button className="btn" type="submit" form="profile-form">Update Profile</button>
+        <button className="btn" type="button" onClick={() => setShowPasswordDialog(true)}>Change Password</button>
       </div>
+
+      {showPasswordDialog && (
+        <div className="modal-backdrop" onClick={() => setShowPasswordDialog(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3>Change Password</h3>
+            <form className="form-grid" onSubmit={changePassword}>
+              <div className="floating-label full">
+                <input type={showOldPassword ? 'text' : 'password'} placeholder=" " value={passwords.oldPassword} onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })} />
+                <label>Old Password</label>
+                <button type="button" className="password-toggle" onClick={() => setShowOldPassword((v) => !v)}>
+                  {showOldPassword ? '🙈' : '👁'}
+                </button>
+              </div>
+              <div className="floating-label full">
+                <input type={showNewPassword ? 'text' : 'password'} placeholder=" " value={passwords.newPassword} onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })} />
+                <label>New Password</label>
+                <button type="button" className="password-toggle" onClick={() => setShowNewPassword((v) => !v)}>
+                  {showNewPassword ? '🙈' : '👁'}
+                </button>
+              </div>
+              {passwords.newPassword && getPasswordMissingRules(passwords.newPassword).length > 0 && (
+                <p className="error small">
+                  Missing: {getPasswordMissingRules(passwords.newPassword).join(', ')}
+                </p>
+              )}
+              <div className="button-row">
+                <button type="button" className="btn cancel" onClick={() => setShowPasswordDialog(false)}>Cancel</button>
+                <button className="btn" type="submit">Change Password</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

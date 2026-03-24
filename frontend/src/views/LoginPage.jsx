@@ -57,8 +57,17 @@ export default function LoginPage() {
               {showPassword ? '🙈' : '👁'}
             </button>
           </div>
-          <button className="btn" type="submit">Sign In</button>
+          <a className="auth-link" href="/register">Don't have an account? Register</a>
+          <div className="button-row">
+            <button className="btn" type="submit">Sign In</button>
+          </div>
         </form>
+        <div className="login-note">
+          <h3>Demo Login Credentials</h3>
+          <p><strong>Admin</strong> - Username: admin, Email: admin@gmail.com, Password: admin123</p>
+          <p><strong>User</strong> - Username: user, Email: user@gmail.com, Password: user123</p>
+          <p><strong>Admin 2</strong> - Username: admin2, Email: admin2@gmail.com, Password: admin2123</p>
+        </div>
       </div>
       <div className="login-right">
         <img

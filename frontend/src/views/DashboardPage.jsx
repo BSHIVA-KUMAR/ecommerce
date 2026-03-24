@@ -138,7 +138,10 @@ export default function DashboardPage() {
                 <input placeholder=" " type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} required />
                 <label>Price</label>
               </div>
-              <button className="btn" type="submit">{editingId ? 'Update Product' : 'Add Product'}</button>
+              <div className="button-row">
+                <button type="button" className="btn cancel" onClick={() => setShowAddPopup(false)}>Cancel</button>
+                <button className="btn" type="submit">{editingId ? 'Update Product' : 'Add Product'}</button>
+              </div>
             </form>
           </div>
         </div>
@@ -150,7 +153,9 @@ export default function DashboardPage() {
             <h3>{selectedProduct.name}</h3>
             <p>{selectedProduct.description}</p>
             <p><strong>Price:</strong> Rs. {selectedProduct.price}</p>
-            <button className="btn" onClick={() => setSelectedProduct(null)}>Close</button>
+            <div className="button-row">
+              <button className="btn cancel" onClick={() => setSelectedProduct(null)}>Cancel</button>
+            </div>
           </div>
         </div>
       )}

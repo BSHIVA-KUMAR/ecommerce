@@ -9,6 +9,7 @@ import RegisterPage from './views/RegisterPage.jsx';
 import DashboardPage from './views/DashboardPage.jsx';
 import ProfilePage from './views/ProfilePage.jsx';
 import shoppingCartIcon from './assets/shopping-cart.png';
+import busyCommerceLogo from './assets/BusyCommerceLogo.png';
 
 function ProtectedRoute({ children }) {
   const { token } = useAuth();
@@ -26,7 +27,9 @@ function Header({ onOpenCart }) {
 
   return (
     <header className="topbar">
-      <h1>Ecommerce</h1>
+      <Link to={user ? '/dashboard' : '/login'} className="brand-link" aria-label="Busy Commerce">
+        <img src={busyCommerceLogo} alt="Busy Commerce" className="brand-logo" />
+      </Link>
       <nav>
         {user && <Link to="/dashboard">Dashboard</Link>}
         {user && <Link to="/profile">Profile</Link>}
@@ -87,10 +90,17 @@ function AppRoutes() {
                   ))}
                 </div>
                 <p><strong>Total: Rs. {total}</strong></p>
-                <button className="btn secondary" onClick={clearCart}>Clear Cart</button>
+                <div className="button-row">
+                  <button className="btn cancel" onClick={() => setShowCartModal(false)}>Cancel</button>
+                  <button className="btn secondary" onClick={clearCart}>Clear Cart</button>
+                </div>
               </>
             )}
-            <button className="btn" onClick={() => setShowCartModal(false)}>Close</button>
+            {cart.length === 0 && (
+              <div className="button-row">
+                <button className="btn cancel" onClick={() => setShowCartModal(false)}>Cancel</button>
+              </div>
+            )}
           </div>
         </div>
       )}
