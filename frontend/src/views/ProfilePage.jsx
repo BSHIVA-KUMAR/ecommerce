@@ -4,15 +4,15 @@ import api from '../api/client.js';
 
 const STRONG_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])(?=.*[A-Za-z\d@$!%*?&]{8,})[A-Za-z\d@$!%*?&]+$/;
 
-function getPasswordMissingRules(password) {
-  const missing = [];
-  if (password.length < 8) missing.push('at least 8 characters');
-  if (!/[a-z]/.test(password)) missing.push('one lowercase letter');
-  if (!/[A-Z]/.test(password)) missing.push('one uppercase letter');
-  if (!/\d/.test(password)) missing.push('one digit');
-  if (!/[@$!%*?&]/.test(password)) missing.push('one special character (@$!%*?&)');
-  if (/\s/.test(password)) missing.push('no whitespace');
-  return missing;
+function getPasswordChecks(password) {
+  return [
+    { label: 'At least 8 characters', valid: password.length >= 8 },
+    { label: 'At least one lowercase letter', valid: /[a-z]/.test(password) },
+    { label: 'At least one uppercase letter', valid: /[A-Z]/.test(password) },
+    { label: 'At least one digit', valid: /\d/.test(password) },
+    { label: 'At least one special character (@$!%*?&)', valid: /[@$!%*?&]/.test(password) },
+    { label: 'No whitespace', valid: !/\s/.test(password) }
+  ];
 }
 
 export default function ProfilePage() {
@@ -49,7 +49,7 @@ export default function ProfilePage() {
 
   const changePassword = async (e) => {
     e.preventDefault();
-    const missingRules = getPasswordMissingRules(passwords.newPassword);
+    const missingRules = getPasswordChecks(passwords.newPassword).filter((rule) => !rule.valid).map((rule) => rule.label);
     if (!STRONG_PASSWORD_REGEX.test(passwords.newPassword) || missingRules.length > 0) {
       toast.error(`New password must include ${missingRules.join(', ')}`);
       return;
@@ -108,11 +108,13 @@ export default function ProfilePage() {
                   {showNewPassword ? '🙈' : '👁'}
                 </button>
               </div>
-              {passwords.newPassword && getPasswordMissingRules(passwords.newPassword).length > 0 && (
-                <p className="error small">
-                  Missing: {getPasswordMissingRules(passwords.newPassword).join(', ')}
-                </p>
-              )}
+              <ul className="password-rules">
+                {getPasswordChecks(passwords.newPassword).map((rule) => (
+                  <li key={rule.label} className={rule.valid ? 'rule-ok' : 'rule-pending'}>
+                    {rule.label}
+                  </li>
+                ))}
+              </ul>
               <div className="button-row">
                 <button type="button" className="btn cancel" onClick={() => setShowPasswordDialog(false)}>Cancel</button>
                 <button className="btn" type="submit">Change Password</button>

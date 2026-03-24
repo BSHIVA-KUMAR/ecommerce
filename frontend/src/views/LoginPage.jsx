@@ -64,9 +64,16 @@ export default function LoginPage() {
         </form>
         <div className="login-note">
           <h3>Demo Login Credentials</h3>
-          <p><strong>Admin</strong> - Username: admin, Email: admin@gmail.com, Password: admin123</p>
-          <p><strong>User</strong> - Username: user, Email: user@gmail.com, Password: user123</p>
-          <p><strong>Admin 2</strong> - Username: admin2, Email: admin2@gmail.com, Password: admin2123</p>
+          <strong> Admin credentials</strong> 
+          <p>Username: admin <br />
+            Email: admin@gmail.com <br />
+            Password: admin123</p>
+          
+          <p>Username: admin2 <br />
+            Email: admin2@gmail.com <br />
+            Password: admin2123</p>
+          <strong>User credentials</strong>
+          <p><strong>User</strong> - Username: user <br /> Email: user@gmail.com <br />Password: user123</p>
         </div>
       </div>
       <div className="login-right">

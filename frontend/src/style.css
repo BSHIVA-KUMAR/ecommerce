@@ -283,6 +283,21 @@ select {
   margin: 6px 0;
   font-size: 13px;
 }
+.password-rules {
+  margin: -24px 0 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 4px;
+}
+.password-rules li {
+  font-size: 13px;
+}
+.rule-ok {
+  color: #16a34a;
+}
+.rule-pending {
+  color: #000;
+}
 .button-row .btn.cancel {
   order: 1;
 }
@@ -372,6 +387,15 @@ select {
   border: 1px solid var(--border);
   display: grid;
   gap: 10px;
+}
+.checkout-success {
+  text-align: center;
+  justify-items: center;
+}
+.checkout-logo {
+  width: 20vw;
+  height: auto;
+  margin-bottom: 6px;
 }
 
 .muted { color: var(--muted); }

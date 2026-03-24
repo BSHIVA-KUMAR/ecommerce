@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Navigate, Route, Routes } from 'react-router-dom';
+import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './state/AuthContext.jsx';
@@ -51,6 +51,14 @@ function AppRoutes() {
   const { token } = useAuth();
   const { cart, total, updateQty, removeFromCart, clearCart } = useCart();
   const [showCartModal, setShowCartModal] = React.useState(false);
+  const [showThanksModal, setShowThanksModal] = React.useState(false);
+  const navigate = useNavigate();
+
+  const handleBuy = () => {
+    clearCart();
+    setShowCartModal(false);
+    setShowThanksModal(true);
+  };
 
   return (
     <>
@@ -93,6 +101,7 @@ function AppRoutes() {
                 <div className="button-row">
                   <button className="btn cancel" onClick={() => setShowCartModal(false)}>Cancel</button>
                   <button className="btn secondary" onClick={clearCart}>Clear Cart</button>
+                  <button className="btn" onClick={handleBuy}>Buy</button>
                 </div>
               </>
             )}
@@ -101,6 +110,27 @@ function AppRoutes() {
                 <button className="btn cancel" onClick={() => setShowCartModal(false)}>Cancel</button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {showThanksModal && (
+        <div className="modal-backdrop" onClick={() => setShowThanksModal(false)}>
+          <div className="modal-card checkout-success" onClick={(e) => e.stopPropagation()}>
+          <h3 style={{color: '#1178bb'}}>Thanks for Shopping with BusyCommerce</h3>
+            <img src={busyCommerceLogo} alt="Busy Commerce" className="checkout-logo" />
+            
+            <div className="button-row"> 
+              <button
+                className="btn"
+                onClick={() => {
+                  setShowThanksModal(false);
+                  navigate('/dashboard');
+                }}
+              >
+                Continue Shopping
+              </button>
+            </div>
           </div>
         </div>
       )}

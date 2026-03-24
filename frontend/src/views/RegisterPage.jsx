@@ -7,15 +7,15 @@ import registerImage from '../assets/register.png';
 
 const STRONG_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])(?=.*[A-Za-z\d@$!%*?&]{8,})[A-Za-z\d@$!%*?&]+$/;
 
-function getPasswordMissingRules(password) {
-  const missing = [];
-  if (password.length < 8) missing.push('at least 8 characters');
-  if (!/[a-z]/.test(password)) missing.push('one lowercase letter');
-  if (!/[A-Z]/.test(password)) missing.push('one uppercase letter');
-  if (!/\d/.test(password)) missing.push('one digit');
-  if (!/[@$!%*?&]/.test(password)) missing.push('one special character (@$!%*?&)');
-  if (/\s/.test(password)) missing.push('no whitespace');
-  return missing;
+function getPasswordChecks(password) {
+  return [
+    { label: 'At least 8 characters', valid: password.length >= 8 },
+    { label: 'At least one lowercase letter', valid: /[a-z]/.test(password) },
+    { label: 'At least one uppercase letter', valid: /[A-Z]/.test(password) },
+    { label: 'At least one digit', valid: /\d/.test(password) },
+    { label: 'At least one special character (@$!%*?&)', valid: /[@$!%*?&]/.test(password) },
+    { label: 'No whitespace', valid: !/\s/.test(password) }
+  ];
 }
 
 export default function RegisterPage() {
@@ -26,7 +26,7 @@ export default function RegisterPage() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const missingRules = getPasswordMissingRules(form.password);
+    const missingRules = getPasswordChecks(form.password).filter((rule) => !rule.valid).map((rule) => rule.label);
     if (!STRONG_PASSWORD_REGEX.test(form.password) || missingRules.length > 0) {
       toast.error(`Password must include ${missingRules.join(', ')}`);
       return;
@@ -79,11 +79,14 @@ export default function RegisterPage() {
               {showPassword ? '🙈' : '👁'}
             </button>
           </div>
-          {form.password && getPasswordMissingRules(form.password).length > 0 && (
-            <p className="error small">
-              Missing: {getPasswordMissingRules(form.password).join(', ')}
-            </p>
-          )}
+          <strong>Password Must have</strong>
+          <ul className="password-rules">
+            {getPasswordChecks(form.password).map((rule) => (
+              <li key={rule.label} className={rule.valid ? 'rule-ok' : 'rule-pending'}>
+                {rule.label}
+              </li>
+            ))}
+          </ul>
           <div className="role-radios">
             <label>
               <input
