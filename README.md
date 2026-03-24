@@ -19,18 +19,31 @@ This project contains:
 
 ## Predefined Users
 
-- **Admin**: `admin` / `admin123`
-- **User**: `user` / `user123`
+Passwords satisfy the same strong rules as registration (mixed case, digit, special `@$!%*?&`, 8+ characters).
+
+- **Admin**: `admin` / `Admin@123` — `admin@gmail.com`
+- **Admin 2**: `admin2` / `Admin2@demo` — `admin2@gmail.com`
+- **User**: `user` / `User@12345` — `user@gmail.com`
 
 ## Backend Setup
 
 1. Install Java 17+ and Maven.
-2. Start backend:
+2. Configure environment variables for Google SSO (recommended via `.env`):
+   - Copy `backend/.env.example` to `backend/.env`
+   - Fill in:
+     - `GOOGLE_CLIENT_ID`
+     - `GOOGLE_CLIENT_SECRET`
+     - `OAUTH2_REDIRECT_URI` (default: `http://localhost:5173/oauth-success`)
+3. Start backend:
    ```bash
    cd backend
+   # Windows PowerShell (loads backend/.env automatically)
+   ./run-with-env.ps1
+
+   # Or default Maven run
    mvn spring-boot:run
    ```
-3. API runs on `http://localhost:8080`.
+4. API runs on `http://localhost:8080`.
 
 ## Frontend Setup
 

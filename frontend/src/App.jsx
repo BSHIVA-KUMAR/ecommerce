@@ -8,6 +8,7 @@ import LoginPage from './views/LoginPage.jsx';
 import RegisterPage from './views/RegisterPage.jsx';
 import DashboardPage from './views/DashboardPage.jsx';
 import ProfilePage from './views/ProfilePage.jsx';
+import OAuthSuccessPage from './views/OAuthSuccessPage.jsx';
 import shoppingCartIcon from './assets/shopping-cart.png';
 import busyCommerceLogo from './assets/BusyCommerceLogo.png';
 
@@ -67,6 +68,7 @@ function AppRoutes() {
         <Routes>
           <Route path="/" element={<Navigate to={token ? '/dashboard' : '/login'} replace />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/oauth-success" element={<OAuthSuccessPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />

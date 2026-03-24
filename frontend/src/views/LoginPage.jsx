@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import api from '../api/client.js';
 import { useAuth } from '../state/AuthContext.jsx';
 import loginImage from '../assets/login.png';
+import googleIcon from '../assets/google.png';
 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -22,6 +23,10 @@ export default function LoginPage() {
       const details = e.response?.data;
       toast.error(details?.message || 'Invalid credentials');
     }
+  };
+
+  const onGoogleLogin = () => {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
   };
 
   return (
@@ -57,23 +62,49 @@ export default function LoginPage() {
               {showPassword ? '🙈' : '👁'}
             </button>
           </div>
-          <a className="auth-link" href="/register">Don't have an account? Register</a>
           <div className="button-row">
+            
+          <a className="auth-link" href="/register">Don't have an account? Register</a>
             <button className="btn" type="submit">Sign In</button>
+          </div>
+
+          <div className="login-divider" aria-hidden="true">
+            <span>or</span>
+          </div>
+          <div className="login-google-row">
+            <button
+              type="button"
+              className="google-signin-btn"
+              onClick={onGoogleLogin}
+              aria-label="Sign in with Google"
+            >
+              <span className="google-signin-icon-wrap">
+                <img src={googleIcon} alt="" className="google-signin-icon" width={22} height={22} />
+              </span>
+              <span className="google-signin-label">Continue with Google</span>
+            </button>
           </div>
         </form>
         <div className="login-note">
           <h3>Demo Login Credentials</h3>
-          <strong> Admin credentials</strong> 
-          <p>Username: admin <br />
-            Email: admin@gmail.com <br />
-            Password: admin123</p>
-          
-          <p>Username: admin2 <br />
-            Email: admin2@gmail.com <br />
-            Password: admin2123</p>
+          <p className="small muted">Passwords match signup rules (8+ chars, upper, lower, number, @$!%*?&amp;).</p>
+          <strong>Admin credentials</strong>
+          <p>
+            Username: admin<br />
+            Email: admin@gmail.com<br />
+            Password: Admin@123
+          </p>
+          <p>
+            Username: admin2<br />
+            Email: admin2@gmail.com<br />
+            Password: Admin2@demo
+          </p>
           <strong>User credentials</strong>
-          <p><strong>User</strong> - Username: user <br /> Email: user@gmail.com <br />Password: user123</p>
+          <p>
+            Username: user<br />
+            Email: user@gmail.com<br />
+            Password: User@12345
+          </p>
         </div>
       </div>
       <div className="login-right">

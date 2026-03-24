@@ -14,43 +14,55 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class DataInitializer {
 
+    /**
+     * Ensures demo accounts always match the documented passwords (fixes DB rows that were
+     * created with older seeded passwords before strong-password rules).
+     */
+    private static UserEntity upsertDemoUser(
+            UserRepository userRepository,
+            PasswordEncoder encoder,
+            String username,
+            String email,
+            String fullName,
+            Role role,
+            String rawPassword) {
+        UserEntity u = userRepository.findByUsername(username).orElseGet(UserEntity::new);
+        u.setUsername(username);
+        u.setEmail(email);
+        u.setFullName(fullName);
+        u.setRole(role);
+        u.setPassword(encoder.encode(rawPassword));
+        return userRepository.save(u);
+    }
+
     @Bean
     CommandLineRunner seedData(UserRepository userRepository, ProductRepository productRepository, PasswordEncoder encoder) {
         return args -> {
-            UserEntity adminUser = null;
-            if (!userRepository.existsByUsername("admin")) {
-                UserEntity admin = new UserEntity();
-                admin.setUsername("admin");
-                admin.setPassword(encoder.encode("admin123"));
-                admin.setEmail("admin@gmail.com");
-                admin.setFullName("Platform Admin");
-                admin.setRole(Role.ROLE_ADMIN);
-                adminUser = userRepository.save(admin);
-            }
-            if (adminUser == null) {
-                adminUser = userRepository.findByUsername("admin").orElse(null);
-            }
-
-            if (!userRepository.existsByUsername("user")) {
-                UserEntity user = new UserEntity();
-                user.setUsername("user");
-                user.setPassword(encoder.encode("user123"));
-                user.setEmail("user@gmail.com");
-                user.setFullName("Demo User");
-                user.setRole(Role.ROLE_USER);
-                userRepository.save(user);
-            }
-
-            if (!userRepository.existsByUsername("admin2")) {
-                UserEntity admin2 = new UserEntity();
-                admin2.setUsername("admin2");
-                admin2.setPassword(encoder.encode("admin2123"));
-                admin2.setEmail("admin2@gmail.com");
-                admin2.setFullName("Second Admin");
-                admin2.setRole(Role.ROLE_ADMIN);
-                userRepository.save(admin2);
-            }
-
+            UserEntity adminUser =
+                    upsertDemoUser(
+                            userRepository,
+                            encoder,
+                            "admin",
+                            "admin@gmail.com",
+                            "Platform Admin",
+                            Role.ROLE_ADMIN,
+                            "Admin@123");
+            upsertDemoUser(
+                    userRepository,
+                    encoder,
+                    "user",
+                    "user@gmail.com",
+                    "Demo User",
+                    Role.ROLE_USER,
+                    "User@12345");
+            upsertDemoUser(
+                    userRepository,
+                    encoder,
+                    "admin2",
+                    "admin2@gmail.com",
+                    "Second Admin",
+                    Role.ROLE_ADMIN,
+                    "Admin2@demo");
             if (productRepository.count() == 0) {
                 Product p1 = new Product();
                 p1.setName("Noise Cancelling Headphones");

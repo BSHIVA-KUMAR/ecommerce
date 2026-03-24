@@ -10,7 +10,7 @@ export default function DashboardPage() {
   const [editingId, setEditingId] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const { addToCart: addItemToCart } = useCart();
   const isAdmin = user?.role === 'ROLE_ADMIN';
   const isRegularUser = user?.role === 'ROLE_USER';
@@ -26,8 +26,9 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
+    if (!token) return;
     loadProducts();
-  }, []);
+  }, [token]);
 
   const saveProduct = async (e) => {
     e.preventDefault();
